@@ -1,6 +1,6 @@
-FROM node:7
+FROM node:12
 
-WORKDIR /usr/src/app
+WORKDIR /usr/src/server
 
 COPY package*.json ./
 

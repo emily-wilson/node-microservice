@@ -1,0 +1,12 @@
+kind: Module
+description: Frontend container
+name: client
+type: container
+services:
+  - name: frontend
+    ports:
+      - name: http
+        containerPort: 3000
+    ingresses:
+      - path: /
+        port: http

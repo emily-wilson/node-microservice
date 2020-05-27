@@ -1,0 +1,10 @@
+kind: Module
+description: Backend container
+name: server
+type: container
+services:
+  - name: backend
+    dependencies: [db]
+    ports:
+      - name: http
+        containerPort: 8080

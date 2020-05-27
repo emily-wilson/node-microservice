@@ -1,0 +1,23 @@
+kind: Project
+name: node-microservice
+environments:
+  - name: local
+providers:
+  - name: local-kubernetes
+    environments: ["local"]
+
+defaultEnvironment: "local"
+dotIgnoreFiles:
+  - .gitignore
+
+---
+
+kind: Module
+description: Database container
+name: db
+type: container
+image: mysql:5.6
+services:
+  - name: db
+    env:
+      MYSQL_ROOT_PASSWORD: password
