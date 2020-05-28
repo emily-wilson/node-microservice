@@ -1,41 +1,48 @@
 var express = require('express');
 var mysql = require('mysql');
+var Task = require('./models');
+const db = require('./db');
 
-var conn = mysql.createConnection({
-  host: "172.17.0.2",
-  user: "root",
-  password: "password",
-  database: "test"
-});
+async function setup() {
+  try {
+    await db.authenticate();
+    console.log("Connected!");
+  } catch(error) {
+    console.error('Unable to connect to database:', error);
+  }
 
-conn.connect(err => {
-  if (err) throw err;
-  console.log("Connected!");
-});
+  try {
+    await db.sync();
+    console.log("All models were synchronized successfully");
+  } catch(error) {
+    console.log("Error synchronizing models:", error);
+  }
+}
 
 var app = express();
 app.use(express.json());
+
+setup();
 
 app.get('/', (req, res) => {
   res.send('Hello World!');
 });
 
 app.get('/tasks', (req, res) => {
-  conn.query("SELECT * FROM tasks", function(err, result) {
-    if (err) {
-      res.send(err);
-    }
-    res.send(result);
-  });
+  Task.findAll()
+    .then(tasks => {
+      res.send(tasks);
+    });
 });
 
 app.post('/tasks', (req, res) => {
-  conn.query(`INSERT INTO tasks (name, descr) VALUES('${req.body.name}', '${req.body.descr}')`, function(err, result) {
-    if (err) {
-      res.send(err);
-    }
-    res.send(result);
-  });
+  Task.create({
+    name: req.body.name,
+    descr: req.body.descr
+  })
+    .then(task => {
+      res.send(task);
+    });
 });
 
 app.listen(80,  () => {

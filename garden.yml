@@ -5,19 +5,33 @@ environments:
 providers:
   - name: local-kubernetes
     environments: ["local"]
-
+    context: minikube
 defaultEnvironment: "local"
 dotIgnoreFiles:
   - .gitignore
-
 ---
-
 kind: Module
-description: Database container
-name: db
+description: Postgres database container
+name: postgres
 type: container
-image: mysql:5.6
+image: postgres
 services:
-  - name: db
+  - name: postgres
+    ports:
+      - name: postgres
+        containerPort: 5432
     env:
-      MYSQL_ROOT_PASSWORD: password
+      POSTGRES_HOST_AUTH_METHOD: trust
+tasks:
+  - name: create-db
+    description: Create test database
+    dependencies: [postgres]
+    command: [/bin/sh, -c]
+    args: [
+      psql -w -U postgres --host=postgres --port=5432 -c "CREATE DATABASE test"
+    ]
+  - name: list-dbs
+    dependencies: [postgres]
+    args: [
+      \l
+    ]

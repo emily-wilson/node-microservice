@@ -1,9 +1,10 @@
 kind: Module
 description: Frontend container
-name: client
+name: frontend
 type: container
 services:
   - name: frontend
+    dependencies: [backend]
     ports:
       - name: http
         containerPort: 3000

@@ -1,10 +1,13 @@
 kind: Module
 description: Backend container
-name: server
+name: backend
 type: container
 services:
   - name: backend
-    dependencies: [db]
+    dependencies: [postgres]
     ports:
-      - name: http
+      - name: interface
         containerPort: 8080
+    ingresses:
+      - path: /
+        port: interface
